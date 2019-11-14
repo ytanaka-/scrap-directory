@@ -75,6 +75,14 @@ class ScrapDirectory:
             if err < tol:
                 break
         return a
+    
+    def _remove_zero_neighbor_facets(self, facets):
+        _facets = []
+        for facet in facets:
+            if facet["neighbors_size"] != 0:
+                _facets.append(facet)
+
+        return _facets
 
     def create_facets_by_indegree(self, G, SIZE=200, topN=50):
         facets = []
@@ -89,7 +97,7 @@ class ScrapDirectory:
                 "neighbors_size": len(neighbors)
             })
 
-        return facets
+        return self._remove_zero_neighbor_facets(facets)
 
     def create_facets_by_indegree_mmr(self, G, SIZE=500, topN=50):
         facets = []
@@ -109,7 +117,7 @@ class ScrapDirectory:
                 "score": score / max_score
             })
         
-        return self.MMR(facets)
+        return self._remove_zero_neighbor_facets(self.MMR(facets))
 
     def create_facets_by_pagerank(self, G, topN=50):
         facets = []
@@ -122,7 +130,7 @@ class ScrapDirectory:
                 "name": name,
                 "neighbors_size": len(set(G.predecessors(name)))
             })
-        return facets
+        return self._remove_zero_neighbor_facets(facets)
 
     def create_facets_by_pagerank_mmr(self, G, SIZE = 200, topN=50):
         facets = []

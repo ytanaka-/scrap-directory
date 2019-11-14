@@ -3,20 +3,20 @@ import re
 import json
 import random
 import networkx as nx
-from directory import ScrapDirectory
-directory = ScrapDirectory()
 import pymongo
 import collections
 from bottle import route, run, request, abort, template, static_file
 from bson.objectid import ObjectId
 from pymongo import MongoClient
+from directory import ScrapDirectory
+directory = ScrapDirectory()
 
-ROOT_SET_SIZE = 10000
-PAGE_SIZE = 50
 HOST = os.getenv('HOST', 'localhost')
 PORT = int(os.getenv('PORT', 8080))
 DEBUG_FLAG = os.getenv('DEBUG_FLAG', True)
 MONGO_URL = os.getenv('MONGO_URL', 'mongodb://localhost:27017/')
+ROOT_SET_LIMIT = 10000
+PAGE_SIZE = 50
 STOPWORD_THRESHOLD = 0.5
 
 # set mongo config
@@ -45,6 +45,13 @@ def create_graph_from_root_set(root_set, isSampling=False):
     for node in set(G.nodes()):
         in_degree_size = len(set(G.predecessors(node)))
         if in_degree_size/base_set_size > STOPWORD_THRESHOLD:
+            G.remove_node(node)
+    
+    # 入と出次数が共に少なすぎるものは削除
+    for node in set(G.nodes()):
+        in_degree_size = len(set(G.predecessors(node)))
+        out_degree_size = len(set(G.successors(node)))
+        if in_degree_size < 1 and out_degree_size < 1:
             G.remove_node(node)
 
     return G
@@ -99,7 +106,6 @@ def get_projects():
 def get_pages():
     project = request.query.project
     algorithm = request.query.algorithm
-    ROOT_SET_LIMIT = ROOT_SET_SIZE
 
     root_set = Page.find({"project": project}, projection={'title':1, 'olinks':1}).limit(ROOT_SET_LIMIT)
     facets = create_facet(list(root_set), algorithm)
@@ -114,7 +120,6 @@ def get_pages():
 def search():
     project = request.query.project
     algorithm = request.query.algorithm
-    ROOT_SET_LIMIT = ROOT_SET_SIZE
     q = request.query.q
     if not q:
         q = ""
@@ -142,7 +147,6 @@ def search():
 def facetedSearch():
     project = request.query.project
     algorithm = request.query.algorithm
-    ROOT_SET_LIMIT = ROOT_SET_SIZE
     query_facets = request.query.facets
     if not query_facets:
         abort(500)
@@ -162,6 +166,8 @@ def facetedSearch():
             "title": re.compile(__q)
         })
 
+    # search-queryを含む場合とそうでない場合の2種類がある
+    # root_setとpagesで分けているのはユーザに返すpagesの件数はPAGE_SIZEだけあればよいため
     if q == "":
         root_set = Page.find({"project": project, "olinks": { "$all": _query_facets }}, projection={'title':1, 'olinks':1}).limit(ROOT_SET_LIMIT)
         pages = Page.find({"project": project, "olinks": { "$all": _query_facets }}, projection={'title':1, 'text':1, 'url': 1}).limit(PAGE_SIZE).sort('updated', pymongo.DESCENDING)

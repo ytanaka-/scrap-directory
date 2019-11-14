@@ -293,7 +293,7 @@ export default {
 }
 
 .select-algorithm {
-  width: 160px;
+  width: 170px;
   margin-top: 0px;
   margin-right: 20px;
 }
