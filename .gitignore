@@ -1,0 +1,9 @@
+*.swp
+.DS_Store
+node_modules
+__pycache__
+*.log
+data
+scripts
+static/js/*
+reachability.py

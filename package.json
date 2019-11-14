@@ -1,0 +1,35 @@
+{
+  "name": "scrap-directory",
+  "version": "0.0.1",
+  "description": "",
+  "main": "server.py",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "python server.py",
+    "build": "webpack --mode production",
+    "watch": "webpack --watch",
+    "heroku-postbuild": "npm run build"
+  },
+  "engines": {
+    "node": "10.x"
+  },
+  "author": "yu-tanaka",
+  "license": "MIT",
+  "dependencies": {
+    "vue": "^2.6.10",
+    "vue-select": "^3.2.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.*",
+    "css-loader": "^3.2.0",
+    "style-loader": "^1.0.0",
+    "stylus": "^0.54.7",
+    "stylus-loader": "^3.0.2",
+    "vue-loader": "^15.7.1",
+    "vue-style-loader": "^4.1.2",
+    "vue-template-compiler": "^2.6.10",
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.7"
+  }
+}
