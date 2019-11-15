@@ -35,7 +35,10 @@ def create_graph_from_root_set(root_set, isSampling=False):
         olinks = page['olinks']
         if isSampling:
             random.shuffle(olinks)
-            olinks = olinks[:20]
+            if len(olinks) > 5:
+                olinks = olinks[:5]
+            else:
+                olinks = olinks[:1]
         for link in olinks:
             if not G.has_node(link):
                 G.add_node(link)
@@ -57,15 +60,20 @@ def create_graph_from_root_set(root_set, isSampling=False):
     return G
 
 def create_facet(root_set, algorithm, base_facet_size=200, facet_size=50):
-    G = create_graph_from_root_set(root_set)
+    if (algorithm == "Random"):
+        G = create_graph_from_root_set(root_set,True)
+    else:
+        G = create_graph_from_root_set(root_set)
     
     if (algorithm == "InDegree"):
         return directory.create_facets_by_indegree(G)
-    if (algorithm == "PageRank"):
-        return directory.create_facets_by_pagerank(G)
     if (algorithm == "InDegree-MMR"):
         return directory.create_facets_by_indegree_mmr(G)
-    
+    if (algorithm == "PageRank"):
+        return directory.create_facets_by_pagerank(G)
+    if (algorithm == "Random"):
+        return directory.create_facets_by_indegree(G)
+
     return []
 
 def create_page_response(pages):

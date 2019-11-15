@@ -67,7 +67,7 @@ export default {
     selectedProject: "",
     projects: [],
     selectedAlgorithm: "InDegree",
-    algorithms: ["InDegree","InDegree-MMR","PageRank"],
+    algorithms: ["InDegree","InDegree-MMR","PageRank","Random"],
     query: "",
     directories: [],
     FACET_THRESHOLD: 5,
