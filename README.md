@@ -7,6 +7,8 @@ Scrapboxのリンク構造を用いて階層ナビゲーションを実現する
 ### Setup
 
 ```
+$ git clone git@github.com:ytanaka-/scrap-directory.git
+$ cd scrap-directory
 $ docker-compose up
 # /data以下にimportしたいscrapbox-projectのjsonファイルを配置し以下を実行
 $ docker-compose exec web python importer/scrapbox-importer.py (your-scrapbox-project).json
