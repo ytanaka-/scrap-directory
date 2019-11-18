@@ -19,7 +19,8 @@ $ docker-compose exec web python importer/scrapbox-importer.py (your-scrapbox-pr
 
 #### contaier内のmongodbにアクセスしたい場合
 ```
-$ docker-compose exec -it mongo mongo
+$ docker-compose exec mongo mongo
+# $ docker-compose exec -it mongo mongo
 $ > use scrap-directory
 $ > db.pages.find() ..etc
 ```
