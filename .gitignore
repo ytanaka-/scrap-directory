@@ -5,5 +5,6 @@ __pycache__
 *.log
 data
 scripts
+importer/*
 static/js/*
 reachability.py
